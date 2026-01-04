@@ -1,0 +1,53 @@
+<main class="container">
+  <h1>ToDo List</h1>
+
+  <form>
+    <div class="mb-3">
+      <label for="titleTask" class="form-label">Title Task</label>
+      <input
+        type="text"
+        placeholder="Enter the title here"
+        class="form-control"
+        id="titleTask"
+        aria-describedby="titleHelp"
+      />
+      <div id="titleHelp" class="form-text">Required field!</div>
+    </div>
+    <div class="mb-3">
+      <label for="textTask" class="form-label">Text about task</label>
+      <input
+        type="text"
+        placeholder="Enter a description about the task"
+        class="form-control"
+        id="textTask"
+        aria-describedby="textHelp"
+      />
+      <div id="textHelp" class="form-text">Required field!</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  <hr />
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Completed</th>
+        <th scope="col">Title</th>
+        <th scope="col">Text</th>
+        <th scope="col">Edit</th>
+        <th scope="col">Save</th>
+        <th scope="col">Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><input type="checkbox" class="form-check-input" id="checkbox" /></td>
+        <td>Remember boss</td>
+        <td>Remember the boss to pay the bills until monday</td>
+        <td><button class="btn btn-warning btn-sm btn-action">Edit</button></td>
+        <td><button class="btn btn-info btn-sm btn-action">Save</button></td>
+        <td><button class="btn btn-danger btn-sm btn-action">Delete</button></td>
+      </tr>
+    </tbody>
+  </table>
+</main>
