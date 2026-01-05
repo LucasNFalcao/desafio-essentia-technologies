@@ -1,11 +1,13 @@
 <main class="container">
   <h1>ToDo List</h1>
 
-  <form>
+  <form #form="ngForm" (ngSubmit)="onCreateTask(form)">
     <div class="mb-3">
       <label for="titleTask" class="form-label">Title Task</label>
       <input
         type="text"
+        ngModel
+        name="titleTask"
         placeholder="Enter the title here"
         class="form-control"
         id="titleTask"
@@ -17,6 +19,8 @@
       <label for="textTask" class="form-label">Text about task</label>
       <input
         type="text"
+        ngModel
+        name="textTask"
         placeholder="Enter a description about the task"
         class="form-control"
         id="textTask"
@@ -40,14 +44,48 @@
       </tr>
     </thead>
     <tbody>
+      @for (task of taskArray; track task; let idx = $index) {
       <tr>
-        <td><input type="checkbox" class="form-check-input" id="checkbox" /></td>
-        <td>Remember boss</td>
-        <td>Remember the boss to pay the bills until monday</td>
-        <td><button class="btn btn-warning btn-sm btn-action">Edit</button></td>
-        <td><button class="btn btn-info btn-sm btn-action">Save</button></td>
-        <td><button class="btn btn-danger btn-sm btn-action">Delete</button></td>
+        <td>
+          <input
+            type="checkbox"
+            [checked]="task.isCompleted"
+            (change)="onCheckboxChange(idx)"
+            class="form-check-input"
+            id="checkbox"
+          />
+        </td>
+        <td>
+          <input
+            type="text"
+            class="form-control"
+            value="{{ task.title }}"
+            [readonly]="task.isReadOnly"
+            [ngClass]="{ crossed: task.isCompleted }"
+          />
+        </td>
+        <td>{{ task.description }}</td>
+        <td>
+          <button class="btn btn-warning btn-sm btn-action" (click)="onEditTask(idx)">Edit</button>
+        </td>
+        <td>
+          <button class="btn btn-info btn-sm btn-action" (click)="onUpdateTask(idx, form)">
+            Save
+          </button>
+        </td>
+        <td>
+          <button class="btn btn-danger btn-sm btn-action" (click)="onDeleteTask(idx)">
+            Delete
+          </button>
+        </td>
       </tr>
+      } @empty {
+      <tr>
+        <td colspan="6">No tasks available.</td>
+      </tr>
+      }
     </tbody>
   </table>
+
+  <p>Task acount: {{ taskArray.length }}</p>
 </main>
