@@ -1,5 +1,15 @@
 <main class="container">
-  <h1>ToDo List</h1>
+  <!-- Button trigger modal -->
+  <button
+    type="button"
+    class="btn btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#staticBackdrop"
+  >
+    Launch static backdrop modal
+  </button>
+
+  <app-modal-todo-item></app-modal-todo-item>
 
   <form #form="ngForm" (ngSubmit)="onCreateTask(form)">
     <div class="mb-3">
@@ -62,6 +72,7 @@
             value="{{ task.title }}"
             [readonly]="task.isReadOnly"
             [ngClass]="{ crossed: task.isCompleted }"
+            #taskTitleInput
           />
         </td>
         <td>{{ task.description }}</td>
@@ -69,7 +80,10 @@
           <button class="btn btn-warning btn-sm btn-action" (click)="onEditTask(idx)">Edit</button>
         </td>
         <td>
-          <button class="btn btn-info btn-sm btn-action" (click)="onUpdateTask(idx, form)">
+          <button
+            class="btn btn-info btn-sm btn-action"
+            (click)="onUpdateTask(idx, taskTitleInput.value)"
+          >
             Save
           </button>
         </td>

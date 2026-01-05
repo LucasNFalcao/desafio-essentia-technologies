@@ -1,10 +1,11 @@
 import { NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import { ModalTodoItem } from '../modal-todo-item/modal-todo-item.component';
 
 @Component({
   selector: 'app-todolist',
-  imports: [FormsModule, NgClass],
+  imports: [FormsModule, NgClass, ModalTodoItem],
   templateUrl: './todolist.component.html',
   styleUrl: './todolist.component.css',
 })
@@ -42,9 +43,12 @@ export class Todolist {
     this.taskArray[index].isReadOnly = !this.taskArray[index].isReadOnly;
   }
 
-  onUpdateTask(index: number, form: NgForm) {
-    this.taskArray[index].title = form.value.titleTask;
-    this.taskArray[index].description = form.value.textTask;
+  onUpdateTask(index: number, title: string) {
+    console.log(title);
+    this.taskArray[index].title = title;
+    this.taskArray[index].description = '';
+
+    console.log(this.taskArray);
   }
 
   onDeleteTask(index: number) {
