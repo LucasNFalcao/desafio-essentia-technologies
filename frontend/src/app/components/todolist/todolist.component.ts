@@ -27,6 +27,22 @@ export class Todolist {
     },
   ];
 
+  modalInfo: {
+    title: string;
+    isToOpen: boolean;
+    idTask: number;
+    titleTask: string;
+    textTask: string;
+  } = {
+    title: '',
+    isToOpen: false,
+    idTask: -1,
+    titleTask: '',
+    textTask: '',
+  };
+
+  isToEditMode: boolean = false;
+
   onCreateTask(form: NgForm) {
     this.taskArray.push({
       id: this.taskArray.length + 1,
@@ -35,20 +51,24 @@ export class Todolist {
       isCompleted: false,
       isReadOnly: true,
     });
-
-    form.reset();
   }
 
   onEditTask(index: number) {
-    this.taskArray[index].isReadOnly = !this.taskArray[index].isReadOnly;
+    this.isToEditMode = true;
+    this.modalInfo.idTask = index;
+    this.onOpenModal(
+      'Edit Task',
+      true,
+      this.taskArray[index].title,
+      this.taskArray[index].description
+    );
   }
 
-  onUpdateTask(index: number, title: string) {
-    console.log(title);
-    this.taskArray[index].title = title;
-    this.taskArray[index].description = '';
-
-    console.log(this.taskArray);
+  onUpdateTask(form: NgForm) {
+    this.taskArray[this.modalInfo.idTask].title =
+      form.value.titleTask || this.taskArray[this.modalInfo.idTask].title;
+    this.taskArray[this.modalInfo.idTask].description =
+      form.value.textTask || this.taskArray[this.modalInfo.idTask].description;
   }
 
   onDeleteTask(index: number) {
@@ -57,6 +77,14 @@ export class Todolist {
 
   onCheckboxChange(index: number) {
     this.taskArray[index].isCompleted = !this.taskArray[index].isCompleted;
-    console.log(this.taskArray[index].isCompleted);
+  }
+
+  onOpenModal(title: string, isToOpen: boolean, titleTask: string = '', textTask: string = '') {
+    this.modalInfo = { title, isToOpen, titleTask, textTask, idTask: this.modalInfo.idTask };
+  }
+
+  onCloseModal() {
+    this.modalInfo = { ...this.modalInfo, isToOpen: false, idTask: -1 };
+    this.isToEditMode = false;
   }
 }

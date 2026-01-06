@@ -2,6 +2,12 @@
   width: 70px;
 }
 
+.btn-create-task {
+  display: block;
+  margin-left: auto;
+  margin-bottom: 12px;
+}
+
 #checkbox {
   border: solid 1.5px blue;
   margin-top: 6px;

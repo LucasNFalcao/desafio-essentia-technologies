@@ -2,45 +2,21 @@
   <!-- Button trigger modal -->
   <button
     type="button"
-    class="btn btn-primary"
+    class="btn btn-primary btn-create-task"
     data-bs-toggle="modal"
     data-bs-target="#staticBackdrop"
+    (click)="onOpenModal('Create New Task', true, '', '')"
   >
-    Launch static backdrop modal
+    Create New Task
   </button>
 
-  <app-modal-todo-item></app-modal-todo-item>
-
-  <form #form="ngForm" (ngSubmit)="onCreateTask(form)">
-    <div class="mb-3">
-      <label for="titleTask" class="form-label">Title Task</label>
-      <input
-        type="text"
-        ngModel
-        name="titleTask"
-        placeholder="Enter the title here"
-        class="form-control"
-        id="titleTask"
-        aria-describedby="titleHelp"
-      />
-      <div id="titleHelp" class="form-text">Required field!</div>
-    </div>
-    <div class="mb-3">
-      <label for="textTask" class="form-label">Text about task</label>
-      <input
-        type="text"
-        ngModel
-        name="textTask"
-        placeholder="Enter a description about the task"
-        class="form-control"
-        id="textTask"
-        aria-describedby="textHelp"
-      />
-      <div id="textHelp" class="form-text">Required field!</div>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
-  <hr />
+  <app-modal-todo-item
+    [isToEditMode]="isToEditMode"
+    [modalInfo]="modalInfo"
+    (closeModal)="onCloseModal()"
+    (createTask)="onCreateTask($event)"
+    (updateTask)="onUpdateTask($event)"
+  ></app-modal-todo-item>
 
   <table class="table">
     <thead>
@@ -49,7 +25,6 @@
         <th scope="col">Title</th>
         <th scope="col">Text</th>
         <th scope="col">Edit</th>
-        <th scope="col">Save</th>
         <th scope="col">Delete</th>
       </tr>
     </thead>
@@ -65,26 +40,17 @@
             id="checkbox"
           />
         </td>
-        <td>
-          <input
-            type="text"
-            class="form-control"
-            value="{{ task.title }}"
-            [readonly]="task.isReadOnly"
-            [ngClass]="{ crossed: task.isCompleted }"
-            #taskTitleInput
-          />
+        <td [ngClass]="{ crossed: task.isCompleted }">
+          {{ task.title }}
         </td>
-        <td>{{ task.description }}</td>
-        <td>
-          <button class="btn btn-warning btn-sm btn-action" (click)="onEditTask(idx)">Edit</button>
-        </td>
+        <td [ngClass]="{ crossed: task.isCompleted }">{{ task.description }}</td>
         <td>
           <button
-            class="btn btn-info btn-sm btn-action"
-            (click)="onUpdateTask(idx, taskTitleInput.value)"
+            class="btn btn-warning btn-sm btn-action"
+            (click)="onEditTask(idx)"
+            [disabled]="task.isCompleted"
           >
-            Save
+            Edit
           </button>
         </td>
         <td>
