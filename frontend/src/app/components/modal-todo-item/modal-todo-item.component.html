@@ -12,17 +12,23 @@
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ modalInfo.title }}</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="onCloseModal(form)"
+        ></button>
       </div>
       <div class="modal-body">
         <form #form="ngForm">
           <div class="mb-3">
-            <label for="titleTask" class="form-label">Title Task</label>
+            <label for="titleTask" class="form-label">Titulo da Tarefa</label>
             <input
               type="text"
               [(ngModel)]="modalInfo.titleTask"
               name="titleTask"
-              placeholder="Enter the title here"
+              placeholder="Digite o título da tarefa aqui"
               class="form-control"
               id="titleTask"
               aria-describedby="titleHelp"
@@ -30,25 +36,27 @@
             />
             @if (titleTaskInvalid) {
             <div id="titleHelp" class="form-text text-danger">
-              Required field! Title cannot be empty.
+              Campo obrigatorio! O titulo não pode ser vazio.
             </div>
             }
           </div>
           <div class="mb-3">
-            <label for="textTask" class="form-label">Text about task</label>
-            <input
+            <label for="textTask" class="form-label">Descrição sobre a tarefa</label>
+            <textarea
               type="text"
               [(ngModel)]="modalInfo.textTask"
               name="textTask"
-              placeholder="Enter a description about the task"
+              placeholder="Digite a descrição da tarefa aqui"
               class="form-control"
               id="textTask"
               aria-describedby="textHelp"
+              rows="5"
+              cols="33"
               [value]="modalInfo.textTask"
-            />
+            ></textarea>
             @if (textTaskInvalid) {
             <div id="textHelp" class="form-text text-danger">
-              Required field! Description cannot be empty.
+              Campo obrigatorio! A descrição não pode ser vazia.
             </div>
             }
           </div>
