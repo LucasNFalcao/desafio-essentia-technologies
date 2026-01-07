@@ -29,13 +29,13 @@
       </tr>
     </thead>
     <tbody>
-      @for (task of taskArray; track task; let idx = $index) {
+      @for (task of taskArray; track task;) {
       <tr>
         <td>
           <input
             type="checkbox"
             [checked]="task.completed"
-            (change)="onCheckboxChange(idx)"
+            (change)="onCheckboxChange(task.id)"
             class="form-check-input"
             id="checkbox"
           />
@@ -49,14 +49,14 @@
         <td>
           <button
             class="btn btn-warning btn-sm btn-action"
-            (click)="onEditTask(idx)"
+            (click)="onEditTask(task)"
             [disabled]="task.completed"
           >
             Editar
           </button>
         </td>
         <td>
-          <button class="btn btn-danger btn-sm btn-action" (click)="onDeleteTask(idx)">
+          <button class="btn btn-danger btn-sm btn-action" (click)="onDeleteTask(task.id)">
             Deletar
           </button>
         </td>

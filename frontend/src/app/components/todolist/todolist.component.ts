@@ -1,7 +1,9 @@
 import { NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ModalTodoItem } from '../modal-todo-item/modal-todo-item.component';
+import { TaskService } from '../../services/task';
+import { Task } from '../../../Task';
 
 @Component({
   selector: 'app-todolist',
@@ -9,34 +11,25 @@ import { ModalTodoItem } from '../modal-todo-item/modal-todo-item.component';
   templateUrl: './todolist.component.html',
   styleUrl: './todolist.component.css',
 })
-export class Todolist {
-  taskArray = [
-    {
-      id: 1,
-      title: 'Sample Task',
-      description: 'This is a sample task description.',
-      isCompleted: false,
-      isReadOnly: true,
-    },
-    {
-      id: 2,
-      title: 'Another Sample Task',
-      description: 'This is an another sample task description.',
-      isCompleted: false,
-      isReadOnly: true,
-    },
-  ];
+export class Todolist implements OnInit {
+  taskArray: Task[] = [];
+
+  constructor(private taskService: TaskService) {}
+
+  ngOnInit(): void {
+    this.taskService.getTasks().subscribe((tasks) => {
+      this.taskArray = tasks;
+    });
+  }
 
   modalInfo: {
     title: string;
     isToOpen: boolean;
-    idTask: number;
     titleTask: string;
     textTask: string;
   } = {
     title: '',
     isToOpen: false,
-    idTask: -1,
     titleTask: '',
     textTask: '',
   };
@@ -44,47 +37,61 @@ export class Todolist {
   isToEditMode: boolean = false;
 
   onCreateTask(form: NgForm) {
-    this.taskArray.push({
-      id: this.taskArray.length + 1,
+    const newTask: Task = {
       title: form.value.titleTask,
       description: form.value.textTask,
-      isCompleted: false,
-      isReadOnly: true,
+      completed: false,
+    };
+
+    this.taskService.createTask(newTask).subscribe((task) => {
+      this.taskArray.push(task);
+      this.onCloseModal();
+    });
+
+    this.taskService.getTasks().subscribe((tasks) => {
+      console.log(tasks);
     });
   }
 
   onEditTask(index: number) {
     this.isToEditMode = true;
-    this.modalInfo.idTask = index;
     this.onOpenModal(
-      'Edit Task',
+      'Editar Tarefa',
       true,
       this.taskArray[index].title,
       this.taskArray[index].description
     );
   }
 
-  onUpdateTask(form: NgForm) {
+  onUpdateTask(form: NgForm, task: Task) {
     this.taskArray[this.modalInfo.idTask].title =
       form.value.titleTask || this.taskArray[this.modalInfo.idTask].title;
     this.taskArray[this.modalInfo.idTask].description =
       form.value.textTask || this.taskArray[this.modalInfo.idTask].description;
+
+    this.taskService.updateTask(task).subscribe(() => {
+      this.onCloseModal();
+    });
   }
 
-  onDeleteTask(index: number) {
-    this.taskArray.splice(index, 1);
+  onDeleteTask(idRemove: String) {
+    this.taskService.deleteTask(idRemove).subscribe(() => {
+      this.taskArray = this.taskArray.filter((task) => task.id !== idRemove);
+    });
   }
 
   onCheckboxChange(index: number) {
-    this.taskArray[index].isCompleted = !this.taskArray[index].isCompleted;
+    this.taskService
+      .updateTaskStatus(index, !this.taskArray[index].completed)
+      .subscribe(() => (this.taskArray[index].completed = !this.taskArray[index].completed));
   }
 
   onOpenModal(title: string, isToOpen: boolean, titleTask: string = '', textTask: string = '') {
-    this.modalInfo = { title, isToOpen, titleTask, textTask, idTask: this.modalInfo.idTask };
+    this.modalInfo = { title, isToOpen, titleTask, textTask };
   }
 
   onCloseModal() {
-    this.modalInfo = { ...this.modalInfo, isToOpen: false, idTask: -1 };
+    this.modalInfo = { ...this.modalInfo, isToOpen: false };
     this.isToEditMode = false;
   }
 }
