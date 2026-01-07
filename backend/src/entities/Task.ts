@@ -1,9 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 
+import { randomUUID } from 'node:crypto'
 @Entity('tasks')
 export class Task {
-  @PrimaryGeneratedColumn()
-  id!: number
+  @PrimaryGeneratedColumn('uuid')
+  id: String = randomUUID()
 
   @Column()
   title!: string

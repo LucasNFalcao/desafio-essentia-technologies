@@ -23,7 +23,7 @@ export class TaskController {
 
   async toggle(req: Request, res: Response) {
     const repo = AppDataSource.getRepository(Task)
-    const task = await repo.findOneBy({ id: Number(req.params.id) })
+    const task = await repo.findOneBy({ id: String(req.params.id) })
 
     if (!task) return res.sendStatus(404)
 
