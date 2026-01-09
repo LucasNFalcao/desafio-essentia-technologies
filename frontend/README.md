@@ -2,6 +2,12 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
 
+## Initial command
+
+```bash
+npm install
+```
+
 ## Development server
 
 To start a local development server, run:
@@ -53,6 +59,26 @@ ng e2e
 ```
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Environment Configuration
+
+**Important Note:** Angular cannot directly read variables from `.env` files like Node.js applications.
+
+This project uses Angular's built-in environment configuration system:
+
+- `src/environments/environment.ts` - Development environment settings
+
+To configure API URLs and other environment-specific variables:
+
+1. Edit the appropriate environment file
+2. Access variables in your code by importing the environment:
+
+```typescript
+import { environment } from '../environment/environment';
+
+// Use environment variables
+const apiUrl = environment.apiUrl;.
+```
 
 ## Additional Resources
 
