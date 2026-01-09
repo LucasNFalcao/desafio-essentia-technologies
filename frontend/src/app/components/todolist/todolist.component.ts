@@ -1,34 +1,37 @@
-import { NgClass } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CommonModule, NgClass } from '@angular/common';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ModalTodoItem } from '../modal-todo-item/modal-todo-item.component';
 import { TaskService } from '../../services/task';
-import { Task } from '../../../Task';
+import { Task } from '../../models/task.model';
 
 @Component({
+  standalone: true,
   selector: 'app-todolist',
-  imports: [FormsModule, NgClass, ModalTodoItem],
+  imports: [CommonModule, FormsModule, NgClass, ModalTodoItem],
   templateUrl: './todolist.component.html',
   styleUrl: './todolist.component.css',
 })
 export class Todolist implements OnInit {
-  taskArray: Task[] = [];
+  taskArray = signal<Task[]>([]);
 
   constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
     this.taskService.getTasks().subscribe((tasks) => {
-      this.taskArray = tasks;
+      this.taskArray.set(tasks);
     });
   }
 
   modalInfo: {
     title: string;
+    idTask: string | null;
     isToOpen: boolean;
     titleTask: string;
     textTask: string;
   } = {
     title: '',
+    idTask: null,
     isToOpen: false,
     titleTask: '',
     textTask: '',
@@ -37,57 +40,73 @@ export class Todolist implements OnInit {
   isToEditMode: boolean = false;
 
   onCreateTask(form: NgForm) {
-    const newTask: Task = {
+    const newTask = {
       title: form.value.titleTask,
       description: form.value.textTask,
       completed: false,
     };
 
     this.taskService.createTask(newTask).subscribe((task) => {
-      this.taskArray.push(task);
+      this.taskArray.update((tasks) => [...tasks, task]);
       this.onCloseModal();
-    });
-
-    this.taskService.getTasks().subscribe((tasks) => {
-      console.log(tasks);
     });
   }
 
-  onEditTask(index: number) {
+  onEditTask(task: Task) {
     this.isToEditMode = true;
-    this.onOpenModal(
-      'Editar Tarefa',
-      true,
-      this.taskArray[index].title,
-      this.taskArray[index].description
-    );
+
+    this.modalInfo = {
+      idTask: task.id,
+      title: 'Editar Tarefa',
+      isToOpen: true,
+      titleTask: task.title,
+      textTask: task.description,
+    };
   }
 
-  onUpdateTask(form: NgForm, task: Task) {
-    this.taskArray[this.modalInfo.idTask].title =
-      form.value.titleTask || this.taskArray[this.modalInfo.idTask].title;
-    this.taskArray[this.modalInfo.idTask].description =
-      form.value.textTask || this.taskArray[this.modalInfo.idTask].description;
+  onUpdateTask(form: NgForm) {
+    if (!this.modalInfo.idTask) return;
 
-    this.taskService.updateTask(task).subscribe(() => {
+    const updatedTask: Task = {
+      id: this.modalInfo.idTask,
+      title: form.value.titleTask,
+      description: form.value.textTask,
+      completed: false,
+    };
+
+    this.taskService.updateTask(updatedTask).subscribe(() => {
+      this.taskArray.update((tasks) =>
+        tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t))
+      );
       this.onCloseModal();
     });
   }
 
-  onDeleteTask(idRemove: String) {
+  onDeleteTask(idRemove: string) {
     this.taskService.deleteTask(idRemove).subscribe(() => {
-      this.taskArray = this.taskArray.filter((task) => task.id !== idRemove);
+      this.taskArray.update((tasks) => tasks.filter((t) => t.id !== idRemove));
     });
   }
 
-  onCheckboxChange(index: number) {
-    this.taskService
-      .updateTaskStatus(index, !this.taskArray[index].completed)
-      .subscribe(() => (this.taskArray[index].completed = !this.taskArray[index].completed));
+  onCheckboxChange(id: string) {
+    const index = this.taskArray().findIndex((task) => task.id === id);
+    if (index === -1) return;
+
+    this.taskService.updateTaskStatus(id, !this.taskArray()[index].completed).subscribe(() => {
+      this.taskArray.update((tasks) =>
+        tasks.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+      );
+    });
   }
 
-  onOpenModal(title: string, isToOpen: boolean, titleTask: string = '', textTask: string = '') {
-    this.modalInfo = { title, isToOpen, titleTask, textTask };
+  onOpenModal(
+    title: string,
+    isToOpen: boolean,
+    titleTask = '',
+    textTask = '',
+    idTask: string | null = null
+  ) {
+    this.modalInfo = { title, isToOpen, titleTask, textTask, idTask };
   }
 
   onCloseModal() {

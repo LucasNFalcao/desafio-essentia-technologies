@@ -1,11 +1,11 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { Todolist } from './components/todolist/todolist.component';
 import { Header } from './components/header/header.component';
 
 @Component({
+  standalone: true,
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Todolist],
+  imports: [Header, Todolist],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
