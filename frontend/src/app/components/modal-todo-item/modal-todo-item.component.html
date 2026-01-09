@@ -1,0 +1,86 @@
+<div
+  class="modal fade"
+  id="staticBackdrop"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+  [ngClass]="{ 'modal-active': modalInfo.isToOpen }"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ modalInfo.title }}</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="onCloseModal(form)"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form #form="ngForm">
+          <div class="mb-3">
+            <label for="titleTask" class="form-label">Titulo da Tarefa</label>
+            <input
+              type="text"
+              [(ngModel)]="modalInfo.titleTask"
+              name="titleTask"
+              placeholder="Digite o título da tarefa aqui"
+              class="form-control"
+              id="titleTask"
+              aria-describedby="titleHelp"
+              [attr.maxlength]="MAX_TITLE_LENGTH"
+            />
+            <div class="d-flex justify-content-between mt-1">
+              <small class="text-muted">
+                {{ modalInfo.titleTask?.length || 0 }}/{{ MAX_TITLE_LENGTH }}
+              </small>
+
+              @if (modalInfo.titleTask?.length === MAX_TITLE_LENGTH) {
+              <small class="text-warning"> Limite máximo atingido </small>
+              }
+            </div>
+            @if (titleTaskInvalid) {
+            <div id="titleHelp" class="form-text text-danger">
+              Campo obrigatorio! O titulo não pode ser vazio.
+            </div>
+            }
+          </div>
+          <div class="mb-3">
+            <label for="textTask" class="form-label">Descrição sobre a tarefa</label>
+            <textarea
+              type="text"
+              [(ngModel)]="modalInfo.textTask"
+              name="textTask"
+              placeholder="Digite a descrição da tarefa aqui"
+              class="form-control"
+              id="textTask"
+              aria-describedby="textHelp"
+              rows="5"
+              cols="33"
+            ></textarea>
+            @if (textTaskInvalid) {
+            <div id="textHelp" class="form-text text-danger">
+              Campo obrigatorio! A descrição não pode ser vazia.
+            </div>
+            }
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          (click)="onCloseModal(form)"
+        >
+          Close
+        </button>
+        <button type="submit" class="btn btn-primary" (click)="onVerifySubmit(form)">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>

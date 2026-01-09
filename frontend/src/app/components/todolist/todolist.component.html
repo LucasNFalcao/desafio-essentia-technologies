@@ -1,0 +1,73 @@
+<main class="container">
+  <!-- Button trigger modal -->
+  <button
+    type="button"
+    class="btn btn-primary btn-create-task"
+    data-bs-toggle="modal"
+    data-bs-target="#staticBackdrop"
+    (click)="onOpenModal('Criar nova tarefa', true, '', '')"
+  >
+    Criar nova tarefa
+  </button>
+
+  <app-modal-todo-item
+    [isToEditMode]="isToEditMode"
+    [modalInfo]="modalInfo"
+    (closeModal)="onCloseModal()"
+    (createTask)="onCreateTask($event)"
+    (updateTask)="onUpdateTask($event)"
+  ></app-modal-todo-item>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Concluida</th>
+        <th scope="col">Titulo</th>
+        <th scope="col">Descrição</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (task of taskArray(); track task.id) {
+      <tr>
+        <td>
+          <input
+            type="checkbox"
+            [checked]="task.completed"
+            (change)="onCheckboxChange(task.id!)"
+            class="form-check-input"
+            id="checkbox"
+          />
+        </td>
+        <td class="task-title" [ngClass]="{ crossed: task.completed }">
+          {{ task.title }}
+        </td>
+        <td class="task-description" [ngClass]="{ crossed: task.completed }">
+          {{ task.description }}
+        </td>
+        <td>
+          <button
+            class="btn btn-warning btn-sm btn-action"
+            (click)="onEditTask(task)"
+            [disabled]="task.completed"
+          >
+            Editar
+          </button>
+        </td>
+        <td>
+          <button class="btn btn-danger btn-sm btn-action" (click)="onDeleteTask(task.id!)">
+            Deletar
+          </button>
+        </td>
+      </tr>
+      } @empty {
+      <tr>
+        <td colspan="6"><h2>Não há nenhuma tarefa.</h2></td>
+      </tr>
+      }
+    </tbody>
+  </table>
+
+  <p>Quantidade de tarefas: {{ taskArray().length }}</p>
+</main>

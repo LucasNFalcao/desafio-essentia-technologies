@@ -1,0 +1,15 @@
+nav {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+h1 {
+  display: inline-block;
+  text-align: center;
+  margin: 50px auto;
+  padding: 10px 20px;
+  background-color: transparent;
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.2);
+}
