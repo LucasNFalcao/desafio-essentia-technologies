@@ -32,8 +32,17 @@
               class="form-control"
               id="titleTask"
               aria-describedby="titleHelp"
-              [value]="modalInfo.titleTask"
+              [attr.maxlength]="MAX_TITLE_LENGTH"
             />
+            <div class="d-flex justify-content-between mt-1">
+              <small class="text-muted">
+                {{ modalInfo.titleTask?.length || 0 }}/{{ MAX_TITLE_LENGTH }}
+              </small>
+
+              @if (modalInfo.titleTask?.length === MAX_TITLE_LENGTH) {
+              <small class="text-warning"> Limite máximo atingido </small>
+              }
+            </div>
             @if (titleTaskInvalid) {
             <div id="titleHelp" class="form-text text-danger">
               Campo obrigatorio! O titulo não pode ser vazio.
@@ -52,7 +61,6 @@
               aria-describedby="textHelp"
               rows="5"
               cols="33"
-              [value]="modalInfo.textTask"
             ></textarea>
             @if (textTaskInvalid) {
             <div id="textHelp" class="form-text text-danger">

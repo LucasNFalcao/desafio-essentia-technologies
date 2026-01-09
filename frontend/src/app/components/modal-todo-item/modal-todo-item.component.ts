@@ -1,15 +1,17 @@
-import { NgClass } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
 @Component({
+  standalone: true,
   selector: 'app-modal-todo-item',
-  imports: [NgClass, FormsModule],
+  imports: [CommonModule, NgClass, FormsModule],
   templateUrl: './modal-todo-item.component.html',
   styleUrl: './modal-todo-item.component.css',
 })
 export class ModalTodoItem {
   @Input() modalInfo!: {
+    idTask: string | null;
     title: string;
     isToOpen: boolean;
     titleTask: string;
@@ -20,11 +22,16 @@ export class ModalTodoItem {
   @Output() updateTask = new EventEmitter<NgForm>();
   @Output() closeModal = new EventEmitter<void>();
 
+  readonly MAX_TITLE_LENGTH = 250;
   titleTaskInvalid: boolean = false;
   textTaskInvalid: boolean = false;
 
   onVerifySubmit(form: NgForm) {
-    if (!form.value.titleTask || form.value.titleTask.trim() === '') {
+    if (
+      !form.value.titleTask ||
+      form.value.titleTask.trim() === '' ||
+      form.value.titleTask.length > this.MAX_TITLE_LENGTH
+    ) {
       this.titleTaskInvalid = true;
     } else {
       this.titleTaskInvalid = false;

@@ -29,22 +29,22 @@
       </tr>
     </thead>
     <tbody>
-      @for (task of taskArray; track task;) {
+      @for (task of taskArray(); track task.id) {
       <tr>
         <td>
           <input
             type="checkbox"
             [checked]="task.completed"
-            (change)="onCheckboxChange(task.id)"
+            (change)="onCheckboxChange(task.id!)"
             class="form-check-input"
             id="checkbox"
           />
         </td>
-        <td [ngClass]="{ crossed: task.completed }">
+        <td class="task-title" [ngClass]="{ crossed: task.completed }">
           {{ task.title }}
         </td>
         <td class="task-description" [ngClass]="{ crossed: task.completed }">
-          <p class="fix-error">{{ task.description }}</p>
+          {{ task.description }}
         </td>
         <td>
           <button
@@ -56,7 +56,7 @@
           </button>
         </td>
         <td>
-          <button class="btn btn-danger btn-sm btn-action" (click)="onDeleteTask(task.id)">
+          <button class="btn btn-danger btn-sm btn-action" (click)="onDeleteTask(task.id!)">
             Deletar
           </button>
         </td>
@@ -69,5 +69,5 @@
     </tbody>
   </table>
 
-  <p>Quantidade de tarefas: {{ taskArray.length }}</p>
+  <p>Quantidade de tarefas: {{ taskArray().length }}</p>
 </main>
